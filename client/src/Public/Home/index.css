@@ -1,0 +1,21 @@
+.home {
+    display: inline-block;
+    height: 100vh;
+}
+
+.left {
+    width: 10%;
+}
+
+.mid {
+    width: 60%;
+}
+
+.right {
+    width: 30%;
+}
+
+.home-divider {
+    width: 30%;
+    min-width: 150px;
+}
