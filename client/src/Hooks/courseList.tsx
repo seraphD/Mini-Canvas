@@ -3,11 +3,11 @@ import axios from "axios";
 import config from "../config.js";
 import {Course} from "./interfaces";
 
-function useCourseList(id: string) {
+function useCourseList(userName: string) {
     const [courseList, setCourseList] = useState<Course[]>([]);
 
     useEffect(() => {
-        axios.get(`${config.baseUrl}/courselist`, { params: { id } })
+        axios.get(`${config.baseUrl}/courselist`, { params: { userName } })
         .then(res => {
             setCourseList(res.data);
         })

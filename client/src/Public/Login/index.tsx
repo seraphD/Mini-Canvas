@@ -5,15 +5,20 @@ import axios from 'axios';
 import config from '../../config.js';
 import "./index.css";
 
-function Login() {
-    const [userName, setUserName] = useState("");
-    const [password, setPassword] = useState("");
+function Login(props: any) {
+    const [userName, setUserName] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
     const navigate = useNavigate();
 
     const login = () => {
         axios.post(`${config.baseUrl}/login`, {userName, password})
         .then(res => {
-            navigate("/home", {replace: true})
+            const user = res.data;
+            props.setUser(user);
+            navigate("/home", {replace: true});
+        })
+        .catch(err => {
+            alert("UserName not found or password incorrect!!");
         })
     }
 

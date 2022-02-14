@@ -6,13 +6,13 @@ import Course from "../Course";
 import Inbox from "../Inbox";
 import Help from "../Help";
 import SideTabs from "../SideTabs";
-import './index.css'
+import './index.css';
 
-function Home() {
+function Home(props: any) {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <Grid container spacing={2} columns={{ xs: 4, sm: 8, md: 12 }}>
+            <Grid container spacing={4} columns={{ xs: 4, sm: 8, md: 12 }}>
                 <Grid item xs={0} sm={1} md={1}>
                     <Drawer
                         anchor="left"
@@ -34,7 +34,7 @@ function Home() {
                     </Routes>
                 </Grid>
                 <Grid item xs={2} sm={2} md={5} sx={{textAlign: "left"}}>
-                    Todo 
+                    Todo
                     <Divider className="home-divider"/>
                     Recent Feedback
                     <Divider className="home-divider"/>

@@ -23,16 +23,16 @@ function oneCourse(course: Course, key: number) {
     const {name, description, department, code} = course;
 
     return (
-        <Card className="course-card" key={key}>
+        <Card className="course-card" key={key} sx={{ display: "inline-block", height: 150 }}>
             <Link to={`/home/course/${code}`}><h4>{name}</h4></Link>
             <Link to={`/home/course/${code}`}>{description}</Link>
         </Card>
     )
 }
 
-function Dashboard() {
+function Dashboard(...props: any[]) {
     const newsList = useNewsList();
-    const courseList = useCourseList("123");
+    const courseList = useCourseList("student1@vt.edu");
 
     return (
         <Box sx={{textAlign: "left"}}>
