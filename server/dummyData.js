@@ -29,7 +29,7 @@ const dummyNews = [
         figureUrl: "",
     },
     {
-        title: "New policy for GAT salary",
+        title: "New policy for GTA salary",
         body: "news body, news body, news body, news body, news body, news body, news body, news body, news body, news body, news body, news body, news body, news body, news bodynews body, news body, news body, news body, news body",
         figureUrl: "",
     },
@@ -49,5 +49,17 @@ const dummyRegisted = [
     {course: dummyCourse[8], student: "student2@vt.edu"},
 ]
 
-const dummyData = {dummyUser, dummyCourse, dummyNews, dummyRegisted};
+const dummyAssignment = [
+    {assignmentId: 1, course: 5024, name: "machine learning assignment 1", description: "assignement 1, assignement 1, assignement 1, assignement 1, assignement 1, assignement 1", dueDate: "Feb 23, 23: 59pm", status: "published", files: [], point: 100},
+    {assignmentId: 2, course: 5024, name: "machine learning assignment 2", description: "assignement 2, assignement 2,assignement 2,assignement 2,assignement 2,assignement 2,assignement 2", dueDate: "March 13, 23: 59pm", status: "unpublished", files: [], point: 100},
+    {assignmentId: 3, course: 5024, name: "machine learning assignment 3", description: "assignement 3, assignement 3,assignement 3,assignement 3,assignement 3,assignement 3,assignement 3", dueDate: "April 14, 23: 59pm", status: "unpublished", files: [], point: 100},
+    {assignmentId: 4, course: 5024, name: "machine learning assignment 4", description: "assignement 4, assignement 4, assignement 4, assignement 4, assignement 4, assignement 4, assignement 4, ", dueDate: "May 16, 23: 59pm", status: "unpublished", files: [], point: 100},
+    {assignmentId: 5, course: 5024, name: "Final Project", description: "Submitting a project report relating to machine learning", dueDate: "May 23, 23: 59pm", status: "unpublished", files: [], point: 100},
+]
+
+const dummySubmission = [
+
+]
+
+const dummyData = {dummyUser, dummyCourse, dummyNews, dummyRegisted, dummyAssignment, dummySubmission};
 module.exports = dummyData;

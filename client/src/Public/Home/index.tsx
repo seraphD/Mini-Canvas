@@ -1,14 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { Grid, Box, Drawer, Divider } from "@mui/material";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Dashboard from "../Dashboard";
 import Course from "../Course";
 import Inbox from "../Inbox";
 import Help from "../Help";
 import SideTabs from "../SideTabs";
 import './index.css';
+import { User } from "../../Hooks/interfaces";
 
-function Home(props: any) {
+type HomeProps = {user: User, setUser: React.Dispatch<React.SetStateAction<User>>}
+
+function Home(props: HomeProps) {
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (props.user.userName === "") {
+            if (localStorage.getItem("user") === null) {
+                navigate("/login");
+            }
+            else {
+                const user = JSON.parse(localStorage.getItem("user")!);
+                props.setUser(user);
+            }
+        }
+    })
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -27,7 +43,7 @@ function Home(props: any) {
                 </Grid>
                 <Grid item xs={2} sm={5} md={6}>
                     <Routes>
-                        <Route path="" element={<Dashboard />}/>
+                        <Route path="" element={<Dashboard user={props.user}/>}/>
                         <Route path="/course/:courseId" element={<Course />}></Route>
                         <Route path="inbox" element={<Inbox />}></Route>
                         <Route path="help" element={<Help />}></Route>
@@ -44,4 +60,4 @@ function Home(props: any) {
     )
 }
 
-export default Home;
+export default Home; 

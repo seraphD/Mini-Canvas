@@ -2,17 +2,19 @@ import React from "react";
 import useNewsList from "../../Hooks/newsList";
 import useCourseList from "../../Hooks/courseList";
 import Paper from '@mui/material/Paper';
-import { Course, News } from "../../Hooks/interfaces";
+import { Course, News, User } from "../../Hooks/interfaces";
 import { Box } from "@mui/system";
 import { Card, Divider } from "@mui/material";
 import "./index.css";
 import { Link } from "react-router-dom";
 
+type DashboardProps = {user: User}
+
 function oneNews(news: News, key: number) {
     const {title, body, figureUrl} = news; 
 
     return (
-        <Paper elevation={3} key={key}>
+        <Paper elevation={3} key={key} sx={{ padding: 1, margin: "10px 0 10px 0" }}>
             <h2>{title}</h2>
             <p>{body}</p>
         </Paper>
@@ -30,9 +32,10 @@ function oneCourse(course: Course, key: number) {
     )
 }
 
-function Dashboard(...props: any[]) {
+function Dashboard(props: DashboardProps) {
+    const {userName} = props.user;
     const newsList = useNewsList();
-    const courseList = useCourseList("student1@vt.edu");
+    const courseList = useCourseList(userName);
 
     return (
         <Box sx={{textAlign: "left"}}>

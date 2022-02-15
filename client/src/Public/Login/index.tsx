@@ -4,8 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import config from '../../config.js';
 import "./index.css";
+import { User } from "../../Hooks/interfaces";
 
-function Login(props: any) {
+type LoginProps = {setUser: React.Dispatch<React.SetStateAction<User>>}
+
+function Login(props: LoginProps) {
     const [userName, setUserName] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const navigate = useNavigate();
@@ -15,6 +18,7 @@ function Login(props: any) {
         .then(res => {
             const user = res.data;
             props.setUser(user);
+            localStorage.setItem("user", JSON.stringify(user));
             navigate("/home", {replace: true});
         })
         .catch(err => {

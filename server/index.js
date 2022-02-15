@@ -28,19 +28,26 @@ app.all('*', function(req, res, next) {
 });
 
 app.get("/todolist", (req, res) => {
-    const { id, course } = req.query;
+    const { userName, course } = req.query;
     const todoList = [];
-    const dummyItem = {
-        course: dummyCourse,
-        point: 10,
-        dueDate: "Feb 7 at 23:59 PM",
-        type: "Assignment",
-        name: "machine learning assignment 1",
+    const getTodoList = (userName, course) => {
+        return new Promise((resolve, reject) => {
+            const { dummyAssignment } = dummyData;
+
+            for (let assignment of dummyAssignment) {
+                if (assignment.student === userName && (course === "all" || assignment.course === course)) {
+                    todoList.push(assignment);
+                }
+            }
+
+            resolve(todoList);
+        })
     }
 
-    todoList.push(dummyItem);
-
-    res.send(todoList);
+    getTodoList(userName, course)
+    .then(data => {
+        res.send(data);
+    })
 })
 
 app.get("/courselist", (req, res) => {

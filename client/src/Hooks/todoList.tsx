@@ -3,11 +3,11 @@ import { TodoItem } from "./interfaces";
 import axios from 'axios';
 import config from "../config";
 
-function useTodoList(id: number) {
+function useTodoList(id: number, course: number = 0) {
     const [todoList, setTodoList] = useState<TodoItem[]>([]);
 
     useEffect(() => {
-        axios.get(`${config.baseUrl}`, { params: {id, course: "all"} })
+        axios.get(`${config.baseUrl}`, { params: {id, course} })
         .then(res => {
             setTodoList(res.data);
         })

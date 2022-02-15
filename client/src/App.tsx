@@ -7,13 +7,13 @@ import Home from './Public/Home';
 import {User} from "./Hooks/interfaces";
 
 function App() {
-  const [user, setUser] = useState<User>()
+  const [user, setUser] = useState<User>({userName: "", role: "student", deparment: "CS"})
 
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="home/*" element={<Home />} />
+        <Route path="/" element={<Login setUser={setUser}/>} />
+        <Route path="home/*" element={<Home user={user} setUser={setUser}/>} />
       </Routes>
     </div>
   );
