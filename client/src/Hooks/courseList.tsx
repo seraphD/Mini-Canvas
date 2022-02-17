@@ -7,6 +7,7 @@ function useCourseList(userName: string) {
     const [courseList, setCourseList] = useState<Course[]>([]);
 
     useEffect(() => {
+        if (userName === "") return;
         axios.get(`${config.baseUrl}/courselist`, { params: { userName } })
         .then(res => {
             setCourseList(res.data);
@@ -14,7 +15,7 @@ function useCourseList(userName: string) {
         .catch(err => {
             alert("Fetch course list failed! Please try again");
         })
-    }, [])
+    }, [userName]);
 
     return courseList;
 }

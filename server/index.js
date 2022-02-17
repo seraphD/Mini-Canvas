@@ -32,11 +32,35 @@ app.get("/todolist", (req, res) => {
     const todoList = [];
     const getTodoList = (userName, course) => {
         return new Promise((resolve, reject) => {
-            const { dummyAssignment } = dummyData;
+            const { dummyAssignment, dummyRegisted, dummySubmission } = dummyData;
+            const isSubmitted = (userName, assignmentId) => {
+                for (let submission of dummySubmission) {
+                    if (submission.userName === userName && submission.assignmentId === assignmentId) {
+                        return true
+                    }
+                }
+                return false
+            }
 
-            for (let assignment of dummyAssignment) {
-                if (assignment.student === userName && (course === "all" || assignment.course === course)) {
-                    todoList.push(assignment);
+            if (course > 0) {
+                for (let assignment of dummyAssignment) {
+                    if (assignment.status === 'published' && assignment.course === course && !isSubmitted(userName, assignment.assignmentId)) {
+                        todoList.push(assignment);
+                    }
+                }
+            }
+            else {
+                const registed = [];
+                for (let re of dummyRegisted) {
+                    if (re.student === userName) {
+                        registed.push(re.course.code);
+                    }
+                }
+
+                for (let assignment of dummyAssignment) {
+                    if (assignment.status === 'published' && registed.indexOf(assignment.course) > -1 && !isSubmitted(userName, assignment.assignmentId)) {
+                        todoList.push(assignment);
+                    }
                 }
             }
 

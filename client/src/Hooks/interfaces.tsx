@@ -1,7 +1,7 @@
 export interface User {
     userName: string,
     role: "student" | "instructor",
-    deparment: "CS" | "ECE",
+    department: "CS" | "ECE",
 }
 
 export interface News {
@@ -19,9 +19,9 @@ export interface Course {
 }
 
 export interface TodoItem {
-    course: Course | null,
-    point: number | null,
+    course: Course,
+    point: number,
     dueDate: string,
     name: string,
-    type: "Assignment" | "Announcement",
+    // type: "Assignment" | "Announcement",
 }

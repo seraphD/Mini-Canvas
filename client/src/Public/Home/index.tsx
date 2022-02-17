@@ -7,24 +7,39 @@ import Inbox from "../Inbox";
 import Help from "../Help";
 import SideTabs from "../SideTabs";
 import './index.css';
-import { User } from "../../Hooks/interfaces";
+import { User, TodoItem } from "../../Hooks/interfaces";
+import useTodoList from "../../Hooks/todoList";
 
 type HomeProps = {user: User, setUser: React.Dispatch<React.SetStateAction<User>>}
 
+function oneTodo(todoItem: TodoItem) {
+    const {name, point, course, dueDate} = todoItem;
+
+    return (
+        <Box className="todo-item">
+            <p className="todo-name">{name}</p>
+            <p>Point: {point} |</p>
+            <p>Due: {dueDate}</p>
+        </Box>
+    )
+}
+
 function Home(props: HomeProps) {
     const navigate = useNavigate()
+    const [user, setUser] = useState<User>(props.user);
+    const todoList = useTodoList(user.userName);
 
     useEffect(() => {
-        if (props.user.userName === "") {
+        if (user.userName === "") {
             if (localStorage.getItem("user") === null) {
                 navigate("/login");
             }
             else {
                 const user = JSON.parse(localStorage.getItem("user")!);
-                props.setUser(user);
+                setUser(user);
             }
         }
-    })
+    }, [])
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -43,7 +58,7 @@ function Home(props: HomeProps) {
                 </Grid>
                 <Grid item xs={2} sm={5} md={6}>
                     <Routes>
-                        <Route path="" element={<Dashboard user={props.user}/>}/>
+                        <Route path="" element={<Dashboard user={user}/>}/>
                         <Route path="/course/:courseId" element={<Course />}></Route>
                         <Route path="inbox" element={<Inbox />}></Route>
                         <Route path="help" element={<Help />}></Route>
@@ -52,6 +67,7 @@ function Home(props: HomeProps) {
                 <Grid item xs={2} sm={2} md={5} sx={{textAlign: "left"}}>
                     Todo
                     <Divider className="home-divider"/>
+                    {todoList.map(item => oneTodo(item))}
                     Recent Feedback
                     <Divider className="home-divider"/>
                 </Grid>

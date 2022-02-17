@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import useNewsList from "../../Hooks/newsList";
 import useCourseList from "../../Hooks/courseList";
 import Paper from '@mui/material/Paper';
@@ -33,8 +33,15 @@ function oneCourse(course: Course, key: number) {
 }
 
 function Dashboard(props: DashboardProps) {
-    const {userName} = props.user;
+    const [userName, setUserName] = useState<string>(props.user.userName);
     const newsList = useNewsList();
+
+    useEffect(() => {
+        setUserName('student1@vt.edu');
+        // setUserName(props.user.userName);
+        console.log(userName);
+    }, [props.user])
+
     const courseList = useCourseList(userName);
 
     return (
