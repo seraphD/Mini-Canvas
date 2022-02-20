@@ -55,11 +55,55 @@ const dummyAssignment = [
     {assignmentId: 3, course: 5024, name: "machine learning assignment 3", description: "assignement 3, assignement 3,assignement 3,assignement 3,assignement 3,assignement 3,assignement 3", dueDate: "April 14, 23: 59pm", status: "unpublished", files: [], point: 100},
     {assignmentId: 4, course: 5024, name: "machine learning assignment 4", description: "assignement 4, assignement 4, assignement 4, assignement 4, assignement 4, assignement 4, assignement 4, ", dueDate: "May 16, 23: 59pm", status: "unpublished", files: [], point: 100},
     {assignmentId: 5, course: 5024, name: "Final Project", description: "Submitting a project report relating to machine learning", dueDate: "May 23, 23: 59pm", status: "unpublished", files: [], point: 100},
+    {assignmentId: 6, course: 5040, name: "DA assignment 1", description: "assignment 1 assignment 1 assignment 1 assignment 1", dueDate: "March 21, 23: 59pm", status: "published", files: [], point: 100},
+]
+
+const dummyCoursePage = [
+    {
+        code: "5024",
+        tabs: [{"Home": true, "assignment": true, "Grade": true, "file": true}],
+        page: [
+            {
+                type: 'paragraph',
+                children: [
+                  { text: 'This is editable ' },
+                  { text: 'rich', bold: true },
+                  { text: ' text, ' },
+                  { text: 'much', italic: true },
+                  { text: ' better than a ' },
+                  { text: '<textarea>', code: true },
+                  { text: '!' },
+                ],
+              },
+              {
+                type: 'paragraph',
+                children: [
+                  {
+                    text:
+                      "Since it's rich text, you can do things like turn a selection of text ",
+                  },
+                  { text: 'bold', bold: true },
+                  {
+                    text:
+                      ', or add a semantically rendered block quote in the middle of the page, like this:',
+                  },
+                ],
+              },
+              {
+                type: 'block-quote',
+                children: [{ text: 'A wise quote.' }],
+              },
+              {
+                type: 'paragraph',
+                children: [{ text: 'Try it out for yourself!' }],
+              },
+        ]
+    }
 ]
 
 const dummySubmission = [
-
+    
 ]
 
-const dummyData = {dummyUser, dummyCourse, dummyNews, dummyRegisted, dummyAssignment, dummySubmission};
+const dummyData = {dummyUser, dummyCourse, dummyNews, dummyRegisted, dummyAssignment, dummySubmission, dummyCoursePage};
 module.exports = dummyData;

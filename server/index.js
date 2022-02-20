@@ -27,6 +27,26 @@ app.all('*', function(req, res, next) {
     next();
 });
 
+app.get("/coursepage", (req, res) => {
+    const {courseCode} = req.query;
+    const {dummyCoursePage} = dummyData;
+
+    const findCoursePage = (code) => {
+        return new Promise((resolve) => {
+            for (const course of dummyCoursePage) {
+                if (course.code === code) {
+                    resolve(course);
+                }
+            }
+        })
+    }
+
+    findCoursePage(courseCode)
+    .then(data => {
+        res.send(data);
+    })
+})
+
 app.get("/todolist", (req, res) => {
     const { userName, course } = req.query;
     const todoList = [];
