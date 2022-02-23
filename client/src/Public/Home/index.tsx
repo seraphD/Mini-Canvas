@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Grid, Box, Drawer, Divider } from "@mui/material";
+import { Grid, Box, Drawer } from "@mui/material";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Dashboard from "../Dashboard";
 import Course from "../Course/index";
@@ -45,7 +45,7 @@ function Home(props: HomeProps) {
                 <Grid item xs={4} sm={8} md={12} lg={14} xl={18}>
                     <Routes>
                         <Route path="" element={<Dashboard user={user}/>}/>
-                        <Route path="course/:courseCode" element={<Course />}></Route>
+                        <Route path="course/:courseCode/*" element={<Course userName={user.userName} role={user.role}/>}></Route>
                         <Route path="inbox" element={<Inbox />}></Route>
                         <Route path="help" element={<Help />}></Route>
                     </Routes>

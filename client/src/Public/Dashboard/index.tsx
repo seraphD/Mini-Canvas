@@ -59,7 +59,7 @@ function Dashboard(props: DashboardProps) {
 
     return (
         <Box sx={{textAlign: "left"}}>
-            <Grid container spacing={4} xs={4} sm={8} md={12} lg={14} xl={18}>
+            <Grid container spacing={4} columns={{xs: 4, sm: 8, md: 12, lg: 14, xl: 18}}>
                 <Grid item xs={3} sm={5} md={9} lg={10} xl={12}>
                     {newsList.map((news, key) => oneNews(news, key))}
                     <h3>Course</h3>
