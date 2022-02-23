@@ -58,46 +58,13 @@ const dummyAssignment = [
     {assignmentId: 6, course: 5040, name: "DA assignment 1", description: "assignment 1 assignment 1 assignment 1 assignment 1", dueDate: "March 21, 23: 59pm", status: "published", files: [], point: 100},
 ]
 
-const dummyCoursePage = [
+dummyCourse[0].tabs = [{ name: "Home", visible: true }, { name: "Announcement", visible: true}, { name: "Assignment", visible: true }, { name: "Grade", visible: true }, { name: "Files", visible: true }, { name: "Discussions", visible: false }, { name: "People", visible: true }];
+dummyCourse[0].homepage = [
     {
-        code: "5024",
-        tabs: [{"Home": true, "assignment": true, "Grade": true, "file": true}],
-        page: [
-            {
-                type: 'paragraph',
-                children: [
-                  { text: 'This is editable ' },
-                  { text: 'rich', bold: true },
-                  { text: ' text, ' },
-                  { text: 'much', italic: true },
-                  { text: ' better than a ' },
-                  { text: '<textarea>', code: true },
-                  { text: '!' },
-                ],
-              },
-              {
-                type: 'paragraph',
-                children: [
-                  {
-                    text:
-                      "Since it's rich text, you can do things like turn a selection of text ",
-                  },
-                  { text: 'bold', bold: true },
-                  {
-                    text:
-                      ', or add a semantically rendered block quote in the middle of the page, like this:',
-                  },
-                ],
-              },
-              {
-                type: 'block-quote',
-                children: [{ text: 'A wise quote.' }],
-              },
-              {
-                type: 'paragraph',
-                children: [{ text: 'Try it out for yourself!' }],
-              },
-        ]
+        type: 'paragraph',
+        children: [
+            { text: 'Welcome to Machine Learning Introduction', bold: true },
+        ],
     }
 ]
 
@@ -105,5 +72,6 @@ const dummySubmission = [
     
 ]
 
-const dummyData = {dummyUser, dummyCourse, dummyNews, dummyRegisted, dummyAssignment, dummySubmission, dummyCoursePage};
+const term = "Spring 2022";
+const dummyData = {term, dummyUser, dummyCourse, dummyNews, dummyRegisted, dummyAssignment, dummySubmission};
 module.exports = dummyData;

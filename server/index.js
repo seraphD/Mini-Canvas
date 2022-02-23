@@ -10,13 +10,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json())
 
-const dummyCourse = {
-    name: "machine learning",
-    description: "CS5420",
-    department: "CS",
-    code: 5420
-}
-
 app.all('*', function(req, res, next) { 
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -29,12 +22,13 @@ app.all('*', function(req, res, next) {
 
 app.get("/coursepage", (req, res) => {
     const {courseCode} = req.query;
-    const {dummyCoursePage} = dummyData;
+    const {dummyCourse} = dummyData;
 
     const findCoursePage = (code) => {
+        const courseCode = parseInt(code);
         return new Promise((resolve) => {
-            for (const course of dummyCoursePage) {
-                if (course.code === code) {
+            for (const course of dummyCourse) {
+                if (course.code === courseCode) {
                     resolve(course);
                 }
             }
@@ -88,7 +82,7 @@ app.get("/todolist", (req, res) => {
         })
     }
 
-    getTodoList(userName, course)
+    getTodoList(userName, parseInt(course))
     .then(data => {
         res.send(data);
     })
@@ -145,10 +139,15 @@ app.post('/login', async (req, res) => {
     }) 
 })
 
+app.get("/term", (req, res) => {
+    const {term} = dummyData;
+    res.send(term);
+})
+
 app.get('/', (req, res) => {
     res.send('Hello World!');
 })
   
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+    console.log(`Mini-canvas server running on port ${port}`);
 })
