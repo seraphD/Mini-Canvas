@@ -20,6 +20,30 @@ app.all('*', function(req, res, next) {
     next();
 });
 
+app.post("/editcoursepage", (req, res) => {
+    const { value, code } = req.body;
+    const {dummyCourse} = dummyData;
+
+    const updateCoursePage = (code) => {
+        return new Promise((resolve, reject) => {
+            for (const course of dummyCourse) {
+                if (course.code === code) {
+                    course.homepage = value;
+                    resolve();
+                }
+            }
+        })
+    }
+
+    updateCoursePage(parseInt(code))
+    .then(() => {
+        res.send({ success: true });
+    })
+    .catch(error => {
+        res.error();
+    })
+})
+
 app.get("/coursepage", (req, res) => {
     const {courseCode} = req.query;
     const {dummyCourse} = dummyData;

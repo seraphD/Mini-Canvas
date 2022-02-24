@@ -60,8 +60,6 @@ function Course(props: courseProps) {
 
     return (
         <Box sx={{textAlign: "left"}}>
-            {/* {loaded? <Editor readOnly={!editing} initialvalue={coursePage}/> : <></>}
-            <Button variant="contained" onClick={() => setEditing(!editing)}>{editing? "Save" : "Edit"}</Button> */}
             <h3>{department}_{courseCode}_{term}</h3>
             <Divider sx={{ width: "80%" }}></Divider>
             <Grid container spacing={4} columns={{xs: 4, sm: 8, md: 12, lg: 14, xl: 18}}>
@@ -81,7 +79,7 @@ function Course(props: courseProps) {
 
                 <Grid item xs={3} sm={5} md={9} lg={8} xl={10}>
                     <Routes>
-                        <Route path="" element={loaded? <CourseHomePage homepage={courseHomePage} role={props.role}/> : <Box></Box>}></Route>
+                        <Route path="" element={loaded? <CourseHomePage homepage={courseHomePage} role={props.role} code={courseCode!}/> : <Box></Box>}></Route>
                         <Route path="announcement" element={<div>announcement</div>}></Route>
                         <Route path="assignment" element={<div>assignment</div>}></Route>
                         <Route path="grade" element={<div>grade</div>}></Route>

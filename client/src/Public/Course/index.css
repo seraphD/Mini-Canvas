@@ -1,3 +1,9 @@
 .course-tab-text {
     font-size: 1.5em;
 }
+
+#edit-btn {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}

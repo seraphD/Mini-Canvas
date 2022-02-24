@@ -17,11 +17,15 @@ export const Editor = (props) => {
   const renderElement = useCallback(props => <Element {...props} />, [])
   const renderLeaf = useCallback(props => <Leaf {...props} />, [])
   const editor = useMemo(() => withHistory(withReact(createEditor())), [])
+  const parentRef = props.parentRef;
 
   useEffect(() => {
     setValue(props.initialvalue);
-    console.log(value);
   }, [props.initialvalue]);
+
+  useEffect(() => {
+    parentRef.current.value = value;
+  }, [value])
 
   return (
     <Slate editor={editor} value={value} onChange={value => setValue(value)}>
@@ -37,7 +41,7 @@ export const Editor = (props) => {
   )
 }
 
-export const Element = ({ attributes, children, element }) => {
+const Element = ({ attributes, children, element }) => {
   switch (element.type) {
     case 'block-quote':
       return <blockquote {...attributes}>{children}</blockquote>
@@ -56,7 +60,7 @@ export const Element = ({ attributes, children, element }) => {
   }
 }
 
-export const Leaf = ({ attributes, children, leaf }) => {
+const Leaf = ({ attributes, children, leaf }) => {
   if (leaf.bold) {
     children = <strong>{children}</strong>
   }
