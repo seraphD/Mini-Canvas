@@ -4,6 +4,7 @@ import { Descendant } from "slate";
 import { Editor } from "./Editor";
 import axios from "axios";
 import config from "../../config";
+import EditIcon from '@mui/icons-material/Edit';
 
 type courseHomePageProps = { homepage: Descendant[], role: string, code: string };
 
@@ -31,7 +32,7 @@ function CourseHomePage(props: courseHomePageProps) {
         <Box>
             <Editor readOnly={!editing} initialvalue={courseHomePage} parentRef={editorRef} />
             {props.role === "student" ? 
-                <Button variant="contained" sx={{position: "fixed", bottom: 100, right: "40%"}} onClick={handleEditBtnCLick}>
+                <Button variant="contained" endIcon={<EditIcon />} size="large" sx={{position: "fixed", bottom: 100, right: "40%"}} onClick={handleEditBtnCLick}>
                     {editing? "Save" : "Edit"}
                 </Button> 
                 : null}
