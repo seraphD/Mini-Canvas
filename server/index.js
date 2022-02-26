@@ -20,6 +20,37 @@ app.all('*', function(req, res, next) {
     next();
 });
 
+app.get("/assignmentlist", (req, res) => {
+    const {code, role} = req.query;
+    const {dummyAssignment} = dummyData;
+    const assignmentList = []
+
+    const getAssignmentList = (code, role) => {
+        return new Promise((resolve) => {
+            for (const assignment of dummyAssignment) {
+                if (assignment.course === code) {
+                    const {name, dueDate, point} = assignment;
+    
+                    if (role === "student" ) {
+                        if (assignment.status === "published") {
+                            assignmentList.push({name, dueDate, point});
+                        }
+                    }
+                    else {
+                        assignmentList.push({name, dueDate, point});
+                    }
+                }
+            }
+            resolve(assignmentList);
+        })
+    }
+
+    getAssignmentList(parseInt(code), role)
+    .then(assignmentList => {
+        res.send(assignmentList);
+    })
+})
+
 app.post("/editcoursepage", (req, res) => {
     const { value, code } = req.body;
     const {dummyCourse} = dummyData;

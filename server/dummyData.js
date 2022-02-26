@@ -50,12 +50,12 @@ const dummyRegisted = [
 ]
 
 const dummyAssignment = [
-    {assignmentId: 1, course: 5024, name: "machine learning assignment 1", description: "assignement 1, assignement 1, assignement 1, assignement 1, assignement 1, assignement 1", dueDate: "Feb 23, 23: 59pm", status: "published", files: [], point: 100},
-    {assignmentId: 2, course: 5024, name: "machine learning assignment 2", description: "assignement 2, assignement 2,assignement 2,assignement 2,assignement 2,assignement 2,assignement 2", dueDate: "March 13, 23: 59pm", status: "unpublished", files: [], point: 100},
-    {assignmentId: 3, course: 5024, name: "machine learning assignment 3", description: "assignement 3, assignement 3,assignement 3,assignement 3,assignement 3,assignement 3,assignement 3", dueDate: "April 14, 23: 59pm", status: "unpublished", files: [], point: 100},
-    {assignmentId: 4, course: 5024, name: "machine learning assignment 4", description: "assignement 4, assignement 4, assignement 4, assignement 4, assignement 4, assignement 4, assignement 4, ", dueDate: "May 16, 23: 59pm", status: "unpublished", files: [], point: 100},
-    {assignmentId: 5, course: 5024, name: "Final Project", description: "Submitting a project report relating to machine learning", dueDate: "May 23, 23: 59pm", status: "unpublished", files: [], point: 100},
-    {assignmentId: 6, course: 5040, name: "DA assignment 1", description: "assignment 1 assignment 1 assignment 1 assignment 1", dueDate: "March 21, 23: 59pm", status: "published", files: [], point: 100},
+    {assignmentId: 1, course: 5024, name: "machine learning assignment 1", detail: [], dueDate: "Feb 23, 23: 59pm", status: "published", files: [], point: 100},
+    {assignmentId: 2, course: 5024, name: "machine learning assignment 2", detail: [], dueDate: "March 13, 23: 59pm", status: "unpublished", files: [], point: 100},
+    {assignmentId: 3, course: 5024, name: "machine learning assignment 3", detail: [], dueDate: "April 14, 23: 59pm", status: "unpublished", files: [], point: 100},
+    {assignmentId: 4, course: 5024, name: "machine learning assignment 4", detail: [], dueDate: "May 16, 23: 59pm", status: "unpublished", files: [], point: 100},
+    {assignmentId: 5, course: 5024, name: "Final Project", detail: [], dueDate: "May 23, 23: 59pm", status: "unpublished", files: [], point: 100},
+    {assignmentId: 6, course: 5040, name: "DA assignment 1", detail: [], dueDate: "March 21, 23: 59pm", status: "published", files: [], point: 100},
 ]
 
 dummyCourse[0].tabs = [{ name: "Home", visible: true }, { name: "Announcement", visible: true}, { name: "Assignment", visible: true }, { name: "Grade", visible: true }, { name: "Files", visible: true }, { name: "Discussions", visible: false }, { name: "People", visible: true }];
