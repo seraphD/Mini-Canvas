@@ -3,12 +3,12 @@ import axios from "axios";
 import config from "../config.js";
 import {Course} from "./interfaces";
 
-function useCourseList(userName: string) {
+function useCourseList(userName: string, role: string = "student") {
     const [courseList, setCourseList] = useState<Course[]>([]);
 
     useEffect(() => {
         if (userName === "") return;
-        axios.get(`${config.baseUrl}/courselist`, { params: { userName } })
+        axios.get(`${config.baseUrl}/courselist`, { params: { userName, role } })
         .then(res => {
             setCourseList(res.data);
         })

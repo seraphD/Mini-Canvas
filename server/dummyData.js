@@ -58,15 +58,17 @@ const dummyAssignment = [
     {assignmentId: 6, course: 5040, name: "DA assignment 1", detail: [], dueDate: "March 21, 23: 59pm", status: "published", files: [], point: 100},
 ]
 
-dummyCourse[0].tabs = [{ name: "Home", visible: true }, { name: "Announcement", visible: true}, { name: "Assignment", visible: true }, { name: "Grade", visible: true }, { name: "Files", visible: true }, { name: "Discussions", visible: false }, { name: "People", visible: true }];
-dummyCourse[0].homepage = [
-    {
-        type: 'paragraph',
-        children: [
-            { text: 'Welcome to Machine Learning Introduction', bold: true },
-        ],
-    }
-]
+for (const dummycourse of dummyCourse) {
+    dummycourse.tabs = [{ name: "Home", visible: true }, { name: "Announcement", visible: true}, { name: "Assignment", visible: true }, { name: "Grade", visible: true }, { name: "Files", visible: true }, { name: "Discussions", visible: true }, { name: "People", visible: true }];
+    dummycourse.homepage = [
+        {
+            type: 'paragraph',
+            children: [
+                { text: ` Welcome to ${dummycourse.name}`, bold: true },
+            ],
+        }
+    ]
+}
 
 const dummySubmission = [
     

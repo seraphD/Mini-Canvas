@@ -48,14 +48,16 @@ function oneCourse(course: Course, key: number) {
 
 function Dashboard(props: DashboardProps) {
     const [userName, setUserName] = useState<string>(props.user.userName);
+    const [role, setRole] = useState<string>(props.user.role);
     const newsList = useNewsList();
     const todoList = useTodoList(userName);
 
     useEffect(() => {
         setUserName(props.user.userName);
+        setRole(props.user.role);
     }, [props.user])
 
-    const courseList = useCourseList(userName);
+    const courseList = useCourseList(userName, role);
 
     return (
         <Box sx={{textAlign: "left"}}>

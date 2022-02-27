@@ -20,6 +20,32 @@ app.all('*', function(req, res, next) {
     next();
 });
 
+app.post("/tabvisibility", (req, res) => {
+    const {courseCode, tabName, visibility} = req.body;
+
+    const setTabVivibility = () => {
+        return new Promise(resolve => {
+            const {dummyCourse} = dummyData;
+            const code = parseInt(courseCode);
+
+            for (const course of dummyCourse) {
+                if(course.code === code) {
+                    const {tabs} = course;
+
+                    for(const tab of tabs) {
+                        if (tab.name === tabName) {
+                            tab.visible = visibility;
+                            resolve()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    setTabVivibility().then(() => res.status(200).end())
+})
+
 app.get("/assignmentlist", (req, res) => {
     const {code, role} = req.query;
     const {dummyAssignment} = dummyData;
@@ -144,21 +170,28 @@ app.get("/todolist", (req, res) => {
 })
 
 app.get("/courselist", (req, res) => {
-    const { userName } = req.query;
-    const { dummyRegisted } = dummyData;
-    const filterRegisted = (userName) => {
-        return new Promise((resolve, reject) => {
-            const registed = [];
-            for (let re of dummyRegisted) {
-                if (re.student === userName) {
-                    registed.push(re.course);
+    const { userName, role } = req.query;
+    const getCourseList = (userName, role) => {
+        return new Promise((resolve) => {
+            const courseList = [];
+            if (role === "student") {
+                const { dummyRegisted } = dummyData;
+                for (const re of dummyRegisted) {
+                    if (re.student === userName) courseList.push(re.course);
                 }
             }
-            resolve(registed);
+            else {
+                const { dummyCourse } = dummyData;
+                for (const course of dummyCourse) {
+                    if (course.instructor === userName) courseList.push(course);
+                }
+            }
+
+            resolve(courseList);
         })
     }
 
-    filterRegisted(userName).then(data => {
+    getCourseList(userName, role).then(data => {
         res.send(data);
     })
 })
