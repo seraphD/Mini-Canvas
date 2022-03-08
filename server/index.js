@@ -4,6 +4,7 @@ const cors = require("cors")
 const app = express()
 const port = 4000
 const dummyData = require("./dummyData");
+const { v4: uuidv4 } = require('uuid');
 
 app.use(cors())
 app.use(express.json());
@@ -19,6 +20,72 @@ app.all('*', function(req, res, next) {
     res.header('Access-Control-Allow-Credentials', true);
     next();
 });
+
+app.post("/delassignment", (req, res) => {
+    const { assignmentId } = req.body;
+    const { dummyAssignment } = dummyData;
+
+    const deleteAssignment = (id) => {
+        return new Promise(resolve => {
+            for (let i = 0; i < dummyAssignment.length; i++) {
+                if (id === dummyAssignment[i].assignmentId) {
+                    dummyAssignment.splice(i, 1);
+                    resolve();
+                }
+            }
+        })
+    }
+
+    deleteAssignment(assignmentId)
+    .then(() => res.status(200).end());
+})
+
+app.get("/assignmentdetail", (req, res) => {
+    const { assignmentId } = req.query;
+    const { dummyAssignment } = dummyData;
+
+    const getAssignmentDetail = (id) => {
+        return new Promise(resolve => {
+            for (const assignment of dummyAssignment) {
+                if (assignment.assignmentId === id) {
+                    resolve(assignment);
+                }
+            }
+        })
+    }
+    
+    getAssignmentDetail(assignmentId)
+    .then(assignment => res.send(assignment));
+})
+
+app.post("/newassignment", (req, res) => {
+    const { newAssignment } = req.body;
+    const newId = uuidv4();
+    newAssignment.assignmentId = newId;
+    const {dummyAssignment} = dummyData;
+    dummyAssignment.push(newAssignment);
+    console.log(dummyAssignment.length);
+    res.send(newId);
+})
+
+app.post("/editassignment", (req, res) => {
+    const { newAssignment } = req.body;
+    const {dummyAssignment} = dummyData;
+
+    const updateAssignment = (newAssignment) => {
+        return new Promise(resolve => {
+            for (let i=0; i < dummyAssignment.length; i++) {
+                if (dummyAssignment[i].assignmentId === newAssignment.assignmentId) {
+                    dummyAssignment[i] = newAssignment;
+                    resolve();
+                }
+            }
+        })
+    }
+    
+    updateAssignment(newAssignment)
+    .then(() => res.status(200).end());
+})
 
 app.post("/tabvisibility", (req, res) => {
     const {courseCode, tabName, visibility} = req.body;
@@ -55,15 +122,15 @@ app.get("/assignmentlist", (req, res) => {
         return new Promise((resolve) => {
             for (const assignment of dummyAssignment) {
                 if (assignment.course === code) {
-                    const {name, dueDate, point} = assignment;
+                    const {assignmentId, title, dueDate, point, status} = assignment;
     
                     if (role === "student" ) {
                         if (assignment.status === "published") {
-                            assignmentList.push({name, dueDate, point});
+                            assignmentList.push({assignmentId, title, dueDate, point, status});
                         }
                     }
                     else {
-                        assignmentList.push({name, dueDate, point});
+                        assignmentList.push({assignmentId, title, dueDate, point, status});
                     }
                 }
             }

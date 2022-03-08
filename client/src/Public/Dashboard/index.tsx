@@ -3,8 +3,7 @@ import useNewsList from "../../Hooks/newsList";
 import useCourseList from "../../Hooks/courseList";
 import Paper from '@mui/material/Paper';
 import { Course, News, User, TodoItem } from "../../Hooks/interfaces";
-import { Box } from "@mui/system";
-import { Card, Divider, Grid } from "@mui/material";
+import { Card, Divider, Grid, Box } from "@mui/material";
 import "./index.css";
 import { Link } from "react-router-dom";
 import useTodoList from "../../Hooks/todoList";
@@ -12,11 +11,11 @@ import useTodoList from "../../Hooks/todoList";
 type DashboardProps = {user: User}
 
 function oneTodo(todoItem: TodoItem, key: number) {
-    const {name, point, course, dueDate} = todoItem;
+    const {title, point, course, dueDate} = todoItem;
 
     return (
         <Box className="todo-item" key={key}>
-            <p className="todo-name">{name}</p>
+            <p className="todo-name">{title}</p>
             <p>Point: {point} |</p>
             <p>Due: {dueDate}</p>
         </Box>

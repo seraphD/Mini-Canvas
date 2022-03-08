@@ -12,11 +12,11 @@ import { TodoItem } from "../../Hooks/interfaces";
 type courseHomePageProps = { homepage: Descendant[], role: string, code: string, userName: string };
 
 function oneTodo(todoItem: TodoItem, key: number) {
-    const {name, point, dueDate} = todoItem;
+    const {title, point, dueDate} = todoItem;
 
     return (
         <Box className="todo-item" key={key}>
-            <p className="todo-name">{name}</p>
+            <p className="todo-name">{title}</p>
             <p>Point: {point} |</p>
             <p>Due: {dueDate}</p>
         </Box>

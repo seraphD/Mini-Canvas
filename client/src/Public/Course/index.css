@@ -11,3 +11,44 @@
 .visible-icon {
     margin-left: 20px;
 }
+
+.assignment-title {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.assignment-info-item {
+    display: inline-block;
+    margin: 0 10px;
+    font-size: 1.2em;
+}
+
+#assignment-edit-btn {
+    position: absolute;
+    right: 120px;
+    bottom: 10px;
+}
+
+#assignment-delete-btn {
+    position: absolute;
+    right: 0;
+    bottom: 10px;
+}
+
+.assignment-info-item input {
+    padding: 0;
+}
+.assignment-info-item div {
+    padding: 0;
+    padding-left: 5px;
+}
+
+#new-assignment-btn {
+    position: absolute;
+    right: 0;
+    bottom: 50px;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}

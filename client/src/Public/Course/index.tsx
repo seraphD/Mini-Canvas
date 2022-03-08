@@ -6,7 +6,7 @@ import { Box, Grid, List, ListItem, ListItemText, Divider } from "@mui/material"
 import { Descendant } from "slate";
 import { Routes, Route, Link } from "react-router-dom";
 import CourseHomePage from "./CourseHomePage";
-import AssignmentList from "./AssignmentList";
+import Assignment from "./Assignment";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
@@ -43,8 +43,8 @@ function Course(props: courseProps) {
         })
         .catch(error => {
             alert("Load term failed!");
-        })
-    }, [])
+        });
+    }, []);
 
     const setTabVisibility = (tabName: string, visibility: boolean, tab: Tab) => {
         axios.post(`${config.baseUrl}/tabvisibility`, {courseCode, tabName, visibility})
@@ -82,9 +82,9 @@ function Course(props: courseProps) {
 
                 <Grid item xs={4} sm={8} md={12} lg={12} xl={16}>
                     <Routes>
-                        <Route path="" element={loaded? <CourseHomePage homepage={courseHomePage} role={props.role} code={courseCode!} userName={props.userName}/> : <Box></Box>}></Route>
+                        <Route path="" element={loaded? <CourseHomePage homepage={courseHomePage} role={props.role} code={courseCode!} userName={props.userName}/> : null}></Route>
                         <Route path="announcement" element={<div>announcement</div>}></Route>
-                        <Route path="assignment" element={<AssignmentList role={props.role} code={courseCode!}/>}></Route>
+                        <Route path="assignment/*" element={<Assignment role={props.role} code={courseCode!}/>}></Route>
                         <Route path="grade" element={<div>grade</div>}></Route>
                         <Route path="disccusion" element={<div>disccusion</div>}></Route>
                         <Route path="files" element={<div>files</div>}></Route>

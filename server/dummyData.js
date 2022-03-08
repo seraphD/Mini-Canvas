@@ -1,3 +1,5 @@
+const { v4: uuidv4 } = require('uuid');
+
 const dummyUser = [
     {userName: 'student1@vt.edu', password: '123123', role: 'student', department: "CS"},
     {userName: 'student2@vt.edu', password: '123123', role: 'student', department: "CS"},
@@ -50,12 +52,12 @@ const dummyRegisted = [
 ]
 
 const dummyAssignment = [
-    {assignmentId: 1, course: 5024, name: "machine learning assignment 1", detail: [], dueDate: "Feb 23, 23: 59pm", status: "published", files: [], point: 100},
-    {assignmentId: 2, course: 5024, name: "machine learning assignment 2", detail: [], dueDate: "March 13, 23: 59pm", status: "unpublished", files: [], point: 100},
-    {assignmentId: 3, course: 5024, name: "machine learning assignment 3", detail: [], dueDate: "April 14, 23: 59pm", status: "unpublished", files: [], point: 100},
-    {assignmentId: 4, course: 5024, name: "machine learning assignment 4", detail: [], dueDate: "May 16, 23: 59pm", status: "unpublished", files: [], point: 100},
-    {assignmentId: 5, course: 5024, name: "Final Project", detail: [], dueDate: "May 23, 23: 59pm", status: "unpublished", files: [], point: 100},
-    {assignmentId: 6, course: 5040, name: "DA assignment 1", detail: [], dueDate: "March 21, 23: 59pm", status: "published", files: [], point: 100},
+    {assignmentId: uuidv4(), course: 5024, title: "machine learning assignment 1", detail: [], dueDate: "Feb 23, 23: 59pm", status: "published", files: [], point: 100},
+    {assignmentId: uuidv4(), course: 5024, title: "machine learning assignment 2", detail: [], dueDate: "March 13, 23: 59pm", status: "unpublished", files: [], point: 100},
+    {assignmentId: uuidv4(), course: 5024, title: "machine learning assignment 3", detail: [], dueDate: "April 14, 23: 59pm", status: "unpublished", files: [], point: 100},
+    {assignmentId: uuidv4(), course: 5024, title: "machine learning assignment 4", detail: [], dueDate: "May 16, 23: 59pm", status: "unpublished", files: [], point: 100},
+    {assignmentId: uuidv4(), course: 5024, title: "Final Project", detail: [], dueDate: "May 23, 23: 59pm", status: "unpublished", files: [], point: 100},
+    {assignmentId: uuidv4(), course: 5040, title: "DA assignment 1", detail: [], dueDate: "March 21, 23: 59pm", status: "published", files: [], point: 100},
 ]
 
 for (const dummycourse of dummyCourse) {
@@ -65,6 +67,17 @@ for (const dummycourse of dummyCourse) {
             type: 'paragraph',
             children: [
                 { text: ` Welcome to ${dummycourse.name}`, bold: true },
+            ],
+        }
+    ]
+}
+
+for (const assignment of dummyAssignment) {
+    assignment.detail = [
+        {
+            type: 'paragraph',
+            children: [
+                { text: assignment.title, bold: true },
             ],
         }
     ]
