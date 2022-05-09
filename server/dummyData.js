@@ -17,7 +17,6 @@ const dummyCourse = [
     {name: "Data Analtics", code: 5040, description: "Welcome to CS 5040", department: "CS", instructor: "teacher1@vt.edu"},
     {name: "Software engineering", code: 5035, description: "Welcome to CS 5035", department: "CS", instructor: "teacher2@vt.edu"},
     {name: "Data Structure", code: 5049, description: "Welcome to CS 5049", department: "CS", instructor: "teacher2@vt.edu"},
-    {name: "Software engineering", code: 5035, description: "Welcome to CS 5035", department: "CS", instructor: "teacher2@vt.edu"},
     {name: "Web Application Development", code: 5031, description: "Welcome to CS 5031", department: "CS", instructor: "teacher2@vt.edu"},
     {name: "Social Media Analytics", code: 5132, description: "Welcome to CS 5132", department: "CS", instructor: "teacher3@vt.edu"},
     {name: "Urban Computing", code: 5236, description: "Welcome to CS 5236", department: "CS", instructor: "teacher3@vt.edu"},
@@ -62,24 +61,12 @@ const dummyAssignment = [
 
 for (const dummycourse of dummyCourse) {
     dummycourse.tabs = [{ name: "Home", visible: true }, { name: "Announcement", visible: true}, { name: "Assignment", visible: true }, { name: "Grade", visible: true }, { name: "Files", visible: true }, { name: "Discussions", visible: true }, { name: "People", visible: true }];
-    dummycourse.homepage = [
-        {
-            type: 'paragraph',
-            children: [
-                { text: ` Welcome to ${dummycourse.name}`, bold: true },
-            ],
-        }
-    ]
+    dummycourse.homepage = [{type: 'paragraph',children: [{ text: ` Welcome to ${dummycourse.name}`, bold: true }]}]
 }
 
 for (const assignment of dummyAssignment) {
     assignment.detail = [
-        {
-            type: 'paragraph',
-            children: [
-                { text: assignment.title, bold: true },
-            ],
-        }
+        {type: 'paragraph',children: [{ text: assignment.title, bold: true }]}
     ]
 }
 

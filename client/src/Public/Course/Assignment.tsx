@@ -12,10 +12,15 @@ import { AssignmentListItem } from "../../Hooks/interfaces";
 import "./index.css";
 import { Routes, Route, useParams, useNavigate } from "react-router-dom";
 import { Editor } from "./Editor";
+import { styled } from '@mui/material/styles';
 
 type AssignmentListProps = { assignmentList: AssignmentListItem[], code: string, role: string };
 type AssignmentProps = { code: string, role: string };
 type AssignmentDetailProps = { role: string, onDel: Function, onAdd: Function };
+
+const Input = styled('input')({
+    display: 'none',
+  });  
 
 const initAssignmentDetailState = {
     assignmentId: "temp",
@@ -156,8 +161,8 @@ function AssignmentDetail(props: AssignmentDetailProps) {
     const handleEditTitle = (e: any) => dispatch({ type: "editTitle", payload: e.target.value });
 
     return (
-        <Box sx={{ width: "100%", maxWidth: 800 }}>
-            <Box sx={{ position: "relative" }}>
+        <Box sx={{ width: "100%", maxWidth: 800, minWidth: 400 }}>
+            <Box sx={{ position: "relative", height: "10vh" }}>
                 {editing ? <TextField sx={{ width: "50%", margin: "10px 0" }} onChange={handleEditTitle} defaultValue={state.title} variant="outlined"/> : <h2>{state.title}</h2>}
                 <Box sx={{ height: 30 }}>
                     <Box className="assignment-info-item" sx={{ marginLeft: 0 }}>
@@ -175,12 +180,22 @@ function AssignmentDetail(props: AssignmentDetailProps) {
                         </Select> 
                         : state.status}
                     </Box>
-                    { props.role === "instructor" ? <LoadingButton loading={saving} variant="contained" id="assignment-edit-btn" onClick={handleEditBtnClick}>{editing ? "Save" : "Edit"}</LoadingButton> : null }
-                    { props.role === "instructor" ? <LoadingButton loading={saving} variant="contained" color="error" id="assignment-delete-btn" onClick={handleDelBtnClick}>Delete</LoadingButton> : null }
                 </Box>
             </Box>
             <Divider sx={{width: "100%", maxWidth: 800, margin: "10px 0"}}></Divider>
+            <Box sx={{ height: "65vh", border: "solid black", margin: "15px 0" }}>
             { loaded ? <Editor readOnly={!editing} initialvalue={state.detail} parentRef={editorRef}/> : null }
+            </Box>
+            <Box sx={{ height: "10vh", float: "right" }}>
+                { props.role === "student" ? <label htmlFor="contained-button-file">
+                                                <Input accept=".doc,.pdf,.zip" id="contained-button-file" type="file" />
+                                                <Button variant="contained" component="span">
+                                                    Upload
+                                                </Button>
+                                            </label> : null }
+                { props.role === "instructor" ? <LoadingButton loading={saving} sx={{ margin: "0 20px" }} variant="contained" onClick={handleEditBtnClick}>{editing ? "Save" : "Edit"}</LoadingButton> : null }
+                { props.role === "instructor" ? <LoadingButton loading={saving} sx={{ margin: "0 20px" }} variant="contained" color="error" onClick={handleDelBtnClick}>Delete</LoadingButton> : null }
+            </Box>
             <Dialog
                 open={delModel}
                 onClose={delClose}

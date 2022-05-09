@@ -23,17 +23,15 @@
     font-size: 1.2em;
 }
 
-#assignment-edit-btn {
-    position: absolute;
-    right: 120px;
-    bottom: 10px;
+.instructor-btn {
+    margin: 0 20px;
 }
 
-#assignment-delete-btn {
+/* #assignment-delete-btn {
     position: absolute;
     right: 0;
     bottom: 10px;
-}
+} */
 
 .assignment-info-item input {
     padding: 0;
