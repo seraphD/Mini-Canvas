@@ -5,6 +5,7 @@ const app = express()
 const port = 4000
 const dummyData = require("./dummyData");
 const { v4: uuidv4 } = require('uuid');
+const pool = require("./mysql.js");
 
 app.use(cors())
 app.use(express.json());
@@ -88,201 +89,176 @@ app.post("/editassignment", (req, res) => {
 })
 
 app.post("/tabvisibility", (req, res) => {
-    const {courseCode, tabName, visibility} = req.body;
+    const {course, tabName, visibility} = req.body;
 
-    const setTabVivibility = () => {
-        return new Promise(resolve => {
-            const {dummyCourse} = dummyData;
-            const code = parseInt(courseCode);
+    const setTabVivibility = () => new Promise((resolve, reject) => {
+        const sql = `
+        update course
+        set coursepage=JSON_REPLACE(
+            \`coursepage\`,
+            '$.tabs.${tabName}',
+            ${visibility}
+        )
+        where id=${course}
+        `;
 
-            for (const course of dummyCourse) {
-                if(course.code === code) {
-                    const {tabs} = course;
-
-                    for(const tab of tabs) {
-                        if (tab.name === tabName) {
-                            tab.visible = visibility;
-                            resolve()
-                        }
-                    }
-                }
-            }
+        pool.query(sql, (err, res) => {
+            console.log(err);
+            if (err) reject(err);
+            else resolve(res);
         })
-    }
+    })
 
-    setTabVivibility().then(() => res.status(200).end())
+    setTabVivibility().then(() => res.status(200).end()).catch(err => res.status(404).end());
 })
 
 app.get("/assignmentlist", (req, res) => {
-    const {code, role} = req.query;
-    const {dummyAssignment} = dummyData;
-    const assignmentList = []
+    const {role, course} = req.query;
 
-    const getAssignmentList = (code, role) => {
-        return new Promise((resolve) => {
-            for (const assignment of dummyAssignment) {
-                if (assignment.course === code) {
-                    const {assignmentId, title, dueDate, point, status} = assignment;
-    
-                    if (role === "student" ) {
-                        if (assignment.status === "published") {
-                            assignmentList.push({assignmentId, title, dueDate, point, status});
-                        }
-                    }
-                    else {
-                        assignmentList.push({assignmentId, title, dueDate, point, status});
-                    }
-                }
-            }
-            resolve(assignmentList);
+    const getAssignmentList = (role, course) => new Promise((resolve, reject) => {
+        let sql = `
+        select title, duedate, status, point
+        from assignment
+        where courseid=${course} ${role === "student" ? "and status='puslished' or status='closed'" : ""}
+        `
+        
+        pool.query(sql, (err, res) => {
+            if (err) reject(err);
+            else resolve(res);
         })
-    }
-
-    getAssignmentList(parseInt(code), role)
-    .then(assignmentList => {
-        res.send(assignmentList);
     })
+
+    getAssignmentList(role, course).then(data => res.send(data)).catch(err => res.status(404).end());
 })
 
 app.post("/editcoursepage", (req, res) => {
-    const { value, code } = req.body;
-    const {dummyCourse} = dummyData;
+    const { homepage, course } = req.body;
 
-    const updateCoursePage = (code) => {
-        return new Promise((resolve, reject) => {
-            for (const course of dummyCourse) {
-                if (course.code === code) {
-                    course.homepage = value;
-                    resolve();
-                }
-            }
+    const updateCoursePage = (homepage, id) => new Promise((resolve, reject) => {
+        const sql = `
+        update course
+        set coursepage=JSON_REPLACE(
+            \`coursepage\`,
+            "$.homepage",
+            '${homepage}'
+        )
+        where id=${id};
+        `;
+
+        pool.query(sql, (err, res) => {
+            if (err) reject(err);
+            else resolve(res);
         })
-    }
+    })
 
-    updateCoursePage(parseInt(code))
-    .then(() => {
-        res.send({ success: true });
-    })
-    .catch(error => {
-        res.error();
-    })
+    updateCoursePage(homepage, course).then(data => res.send(data)).catch(err => res.status(404).end());
 })
 
 app.get("/coursepage", (req, res) => {
-    const {courseCode} = req.query;
-    const {dummyCourse} = dummyData;
+    const {course} = req.query;
 
-    const findCoursePage = (code) => {
-        const courseCode = parseInt(code);
-        return new Promise((resolve) => {
-            for (const course of dummyCourse) {
-                if (course.code === courseCode) {
-                    resolve(course);
-                }
-            }
+    const findCoursePage = (id) => new Promise((resolve, reject) => {
+        const sql = `select name, coursepage from course where id=${id}`;
+        pool.query(sql, (err, res) => {
+            if (err) reject(err);
+            else resolve(res);
         })
-    }
-
-    findCoursePage(courseCode)
-    .then(data => {
-        res.send(data);
     })
+
+    findCoursePage(course).then(data => res.send(data)).catch(err => res.status(404).end());
 })
 
 app.get("/todolist", (req, res) => {
-    const { userName, course } = req.query;
-    const todoList = [];
-    const getTodoList = (userName, course) => {
-        return new Promise((resolve, reject) => {
-            const { dummyAssignment, dummyRegisted, dummySubmission } = dummyData;
-            const isSubmitted = (userName, assignmentId) => {
-                for (let submission of dummySubmission) {
-                    if (submission.userName === userName && submission.assignmentId === assignmentId) {
-                        return true
-                    }
-                }
-                return false
-            }
-
-            if (course > 0) {
-                for (let assignment of dummyAssignment) {
-                    if (assignment.status === 'published' && assignment.course === course && !isSubmitted(userName, assignment.assignmentId)) {
-                        todoList.push(assignment);
-                    }
-                }
-            }
+    const { userId, course } = req.query;
+    const getTodoList = (userId, course) => new Promise((resolve, reject) => {
+        const sql = `
+        SELECT title, duedate, point 
+        FROM assignment as a, registration as r 
+        where a.courseid=r.courseid ${course ? `and r.courseid=${course}` : ""} and r.studentid="${userId} and a.status='published'";
+        `;
+        pool.query(sql, (err, res) => {
+            if (err) reject(err);
             else {
-                const registed = [];
-                for (let re of dummyRegisted) {
-                    if (re.student === userName) {
-                        registed.push(re.course.code);
-                    }
-                }
-
-                for (let assignment of dummyAssignment) {
-                    if (assignment.status === 'published' && registed.indexOf(assignment.course) > -1 && !isSubmitted(userName, assignment.assignmentId)) {
-                        todoList.push(assignment);
-                    }
-                }
+                resolve(res);
             }
-
-            resolve(todoList);
         })
-    }
-
-    getTodoList(userName, parseInt(course))
-    .then(data => {
-        res.send(data);
     })
+
+    getTodoList(userId, course).then(data => res.send(data)).catch(err => res.status(404).end());
 })
 
 app.get("/courselist", (req, res) => {
-    const { userName, role } = req.query;
-    const getCourseList = (userName, role) => {
-        return new Promise((resolve) => {
-            const courseList = [];
-            if (role === "student") {
-                const { dummyRegisted } = dummyData;
-                for (const re of dummyRegisted) {
-                    if (re.student === userName) courseList.push(re.course);
-                }
-            }
+    const { userid, role } = req.query;
+    const getStuCourseList = (id) => new Promise((resolve, reject) => {
+        const sql = `
+            SELECT courseid, name, department 
+            FROM registration as r, course as c
+            where r.courseid=c.id and r.studentid=${id}
+        `;
+        pool.query(sql, (err, res) => {
+            if (err) reject(err);
             else {
-                const { dummyCourse } = dummyData;
-                for (const course of dummyCourse) {
-                    if (course.instructor === userName) courseList.push(course);
-                }
+                resolve(res);
             }
-
-            resolve(courseList);
         })
-    }
-
-    getCourseList(userName, role).then(data => {
-        res.send(data);
     })
+
+    const getInsCourseList = (id) => new Promise((resolve, reject) => {
+        const sql = `select id, name, department from course where instructor=${id}`;
+        pool.query(sql, (err, res) => {
+            if (err) reject(err);
+            else {
+                resolve(res);
+            }
+        })
+    })
+
+    if (role === "student") {
+        getStuCourseList(userid).then(data => {
+            res.send(data);
+        }).catch(err => res.status(404).end());
+    }
+    else {
+        getInsCourseList(userid).then(data => res.send(data)).catch(err => res.status(404).end());
+    }
 })
 
 app.get("/newslist", (req, res) => {
-    const {dummyNews} = dummyData;
+    const fetchNews = () => new Promise((resolve, reject) => {
+        const sql = `select * from news`;
+        pool.query(sql, (err, res) => {
+            if (err) reject();
+            else {
+                resolve(res);
+            }
+        })
+    })
 
-    res.send(dummyNews);
+    fetchNews().then(
+        news => res.send(news)
+    )
+    .catch(err => {
+        res.status(404).end();
+    })
 })
 
 app.post('/login', async (req, res) => {
     const {userName, password} = req.body;
 
-    const {dummyUser} = dummyData;
     const validate = (userName) => {
         return new Promise((resolve, reject) => {
-            for (let user of dummyUser) {
-                if (user.userName === userName && user.password === password) {
-                    const {role, department} = user;
-                    resolve({userName, role, department})
+            const sql = `select email, password, role from user where username="${userName}"`;
+            pool.query(sql, (err, res) => {
+                if (err) reject(err);
+                else {
+                    if (password === res[0].password) {
+                        resolve(res[0]);
+                    }
+                    else {
+                        reject();
+                    }
                 }
-            }
-
-            reject()
+            })
         })
     }
 
@@ -290,7 +266,7 @@ app.post('/login', async (req, res) => {
         res.send(user)
     })
     .catch(err => {
-        res.status(404).end()
+        res.status(404).end();
     }) 
 })
 
