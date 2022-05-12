@@ -4,7 +4,6 @@ const cors = require("cors")
 const app = express()
 const port = 4000
 const dummyData = require("./dummyData");
-const { v4: uuidv4 } = require('uuid');
 const pool = require("./mysql.js");
 
 app.use(cors())
@@ -22,70 +21,129 @@ app.all('*', function(req, res, next) {
     next();
 });
 
-app.post("/delassignment", (req, res) => {
-    const { assignmentId } = req.body;
-    const { dummyAssignment } = dummyData;
+app.delete("/delAssignment", (req, res) => {
+    const { id } = req.body;
 
-    const deleteAssignment = (id) => {
-        return new Promise(resolve => {
-            for (let i = 0; i < dummyAssignment.length; i++) {
-                if (id === dummyAssignment[i].assignmentId) {
-                    dummyAssignment.splice(i, 1);
-                    resolve();
-                }
-            }
+    const deleteAssignment = (id) => new Promise((resolve, reject) => {
+        const sql = `
+        delete from assignment
+        where id=${id}
+        `
+        pool.query(sql, (err, res) => {
+            if (err) reject(err);
+            else resolve(res);
         })
-    }
+    })
 
-    deleteAssignment(assignmentId)
-    .then(() => res.status(200).end());
+    deleteAssignment(id).then((data) => res.send(data[0])).catch(err => res.status(404).end());
 })
 
-app.get("/assignmentdetail", (req, res) => {
-    const { assignmentId } = req.query;
-    const { dummyAssignment } = dummyData;
+app.get("/assignmentDetail", (req, res) => {
+    const { id } = req.query;
 
-    const getAssignmentDetail = (id) => {
-        return new Promise(resolve => {
-            for (const assignment of dummyAssignment) {
-                if (assignment.assignmentId === id) {
-                    resolve(assignment);
-                }
-            }
+    const getAssignmentDetail = (id) => new Promise((resolve, reject) => {
+        const sql = `
+        select title, detail, duedate, point from assignment
+        where id=${id};
+        `
+        pool.query(sql, (err, res) => {
+            if (err) reject(err);
+            else resolve(res);
         })
-    }
+    })
     
-    getAssignmentDetail(assignmentId)
-    .then(assignment => res.send(assignment));
+    getAssignmentDetail(id).then((data) => res.send(data[0])).catch(err => res.status(404).end());
 })
 
-app.post("/newassignment", (req, res) => {
-    const { newAssignment } = req.body;
-    const newId = uuidv4();
-    newAssignment.assignmentId = newId;
-    const {dummyAssignment} = dummyData;
-    dummyAssignment.push(newAssignment);
-    console.log(dummyAssignment.length);
-    res.send(newId);
-})
+app.post("/newAssignment", (req, res) => {
+    const { course, title, detail, duedate, point } = req.body;
+    const newAssginemnt = () => new Promise((resolve, reject) => {
+        const sql = `
+        insert into assignment (courseid, title, detail, duedate, point)
+        values (${course}, '${title}', '${detail}', '${duedate}', ${point});
+        `;
 
-app.post("/editassignment", (req, res) => {
-    const { newAssignment } = req.body;
-    const {dummyAssignment} = dummyData;
-
-    const updateAssignment = (newAssignment) => {
-        return new Promise(resolve => {
-            for (let i=0; i < dummyAssignment.length; i++) {
-                if (dummyAssignment[i].assignmentId === newAssignment.assignmentId) {
-                    dummyAssignment[i] = newAssignment;
-                    resolve();
-                }
-            }
+        pool.query(sql, (err, res) => {
+            if (err) reject(err);
+            else resolve(res);
         })
-    }
-    
-    updateAssignment(newAssignment)
-    .then(() => res.status(200).end());
+    })
+
+    newAssginemnt().then((data) => res.send(data.insertId)).catch(err => res.status(404).end());
+})
+
+app.patch("/editAssignmentDetail", (req, res) => {
+    const { id, detail } = req.body;
+    const editDetail = (id, detail) => new Promise((resolve, reject) => {
+        const sql = `
+        update assignment
+        set detail='${detail}'
+        where id=${id};
+        `
+        pool.query(sql, (err, res) => {
+            if (err) reject(err);
+            else resolve(res);
+        })
+    })
+
+    editDetail(id, detail).then(() => res.status(200).end()).catch(err => res.status(404).end());
+})
+
+app.patch("/editAssignmentPoint", (req, res) => {
+    const {id, point} = req.body;
+
+    const editPoint = (id, point) => new Promise((resolve, reject) => {
+        const sql = `
+        update assignment
+        set point='${point}'
+        where id=${id};
+        `
+        pool.query(sql, (err, res) => {
+            if (err) reject(err);
+            else resolve(res);
+        })
+    })
+
+    editPoint(id, point).then(() => res.status(200).end()).catch(err => res.status(404).end());
+})
+
+app.patch("/editAssignmentDuedate", (req, res) => {
+    const {id, duedate} = req.body;
+
+    const editDuedate = (id, duedate) => new Promise((resolve, reject) => {
+        const sql = `
+        update assignment
+        set duedate='${duedate}'
+        where id=${id};
+        `
+        pool.query(sql, (err, res) => {
+            if (err) {
+                console.log(err);
+                reject();
+            }
+            else resolve(res);
+        })
+    })
+
+    editDuedate(id, duedate).then(() => res.status(200).end()).catch(err => res.status(404).end());
+})
+
+app.patch("/editAssignmentStatus", (req, res) => {
+    const {id, status} = req.body;
+
+    const editStatus = (id, status) => new Promise((resolve, reject) => {
+        const sql = `
+        update assignment
+        set status=${status}
+        where id=${id};
+        `
+        pool.query(sql, (err, res) => {
+            if (err) reject();
+            else resolve();
+        })
+    })
+
+    editStatus(id, status).then(() => res.status(200).end()).catch(err => res.status(404).end());
 })
 
 app.post("/tabvisibility", (req, res) => {
