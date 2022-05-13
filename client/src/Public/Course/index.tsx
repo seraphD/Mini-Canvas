@@ -10,7 +10,7 @@ import Assignment from "./Assignment";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
-type courseProps = {userName: string, role: string};
+type courseProps = { id: number, userName: string, role: string};
 type Tab = {name: string, visible: boolean};
 
 function Course(props: courseProps) {
@@ -82,7 +82,7 @@ function Course(props: courseProps) {
 
                 <Grid item xs={4} sm={8} md={12} lg={12} xl={16}>
                     <Routes>
-                        <Route path="" element={loaded? <CourseHomePage homepage={courseHomePage} role={props.role} code={courseCode!} userName={props.userName}/> : null}></Route>
+                        <Route path="" element={loaded? <CourseHomePage homepage={courseHomePage} id={props.id} role={props.role} code={courseCode!} userName={props.userName}/> : null}></Route>
                         <Route path="announcement" element={<div>announcement</div>}></Route>
                         <Route path="assignment/*" element={<Assignment role={props.role} code={courseCode!}/>}></Route>
                         <Route path="grade" element={<div>grade</div>}></Route>

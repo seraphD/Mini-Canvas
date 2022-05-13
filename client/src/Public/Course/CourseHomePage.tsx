@@ -9,7 +9,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import useTodoList from "../../Hooks/todoList";
 import { TodoItem } from "../../Hooks/interfaces";
 
-type courseHomePageProps = { homepage: Descendant[], role: string, code: string, userName: string };
+type courseHomePageProps = { id: number, homepage: Descendant[], role: string, code: string, userName: string };
 
 function oneTodo(todoItem: TodoItem, key: number) {
     const {title, point, dueDate} = todoItem;
@@ -28,7 +28,7 @@ function CourseHomePage(props: courseHomePageProps) {
     const [courseHomePage, setCourseHomePage] = useState<Descendant[]>(props.homepage);
     const [editing, setEditing] = useState<boolean>(false);
     const editorRef = useRef({value: []});
-    const todoList = useTodoList(props.userName, parseInt(courseCode ? courseCode : "0"));
+    const todoList = useTodoList(props.id, parseInt(courseCode ? courseCode : "0"));
 
     const handleEditBtnCLick = () => {
         if (editing) {

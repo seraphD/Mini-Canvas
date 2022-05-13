@@ -3,19 +3,19 @@ import axios from "axios";
 import config from "../config.js";
 import {Course} from "./interfaces";
 
-function useCourseList(userName: string, role: string = "student") {
+function useCourseList(userid: number, role: string = "student") {
     const [courseList, setCourseList] = useState<Course[]>([]);
 
     useEffect(() => {
-        if (userName === "") return;
-        axios.get(`${config.baseUrl}/courselist`, { params: { userName, role } })
+        if (userid === 0) return;
+        axios.get(`${config.baseUrl}/courselist`, { params: { userid, role } })
         .then(res => {
             setCourseList(res.data);
         })
         .catch(err => {
             alert("Fetch course list failed! Please try again");
         })
-    }, [userName]);
+    }, [userid]);
 
     return courseList;
 }

@@ -7,7 +7,7 @@ import Home from './Public/Home';
 import {User} from "./Hooks/interfaces";
 
 function App() {
-  const [user, setUser] = useState<User>({userName: "", role: "student", department: "CS"})
+  const [user, setUser] = useState<User>({id: 0, userName: "", role: "student", department: "CS"})
 
   return (
     <div className="App">

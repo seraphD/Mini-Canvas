@@ -264,7 +264,9 @@ app.get("/courselist", (req, res) => {
     const getInsCourseList = (id) => new Promise((resolve, reject) => {
         const sql = `select id, name, department from course where instructor=${id}`;
         pool.query(sql, (err, res) => {
-            if (err) reject(err);
+            if (err) {
+                reject(err);
+            }
             else {
                 resolve(res);
             }
@@ -305,7 +307,7 @@ app.post('/login', async (req, res) => {
 
     const validate = (userName) => {
         return new Promise((resolve, reject) => {
-            const sql = `select email, password, role from user where username="${userName}"`;
+            const sql = `select id, username, password, role, department from user where username="${userName}"`;
             pool.query(sql, (err, res) => {
                 if (err) reject(err);
                 else {
@@ -320,8 +322,9 @@ app.post('/login', async (req, res) => {
         })
     }
 
-    validate(userName).then(user => {
-        res.send(user)
+    validate(userName).then(data => {
+        const {id, username, role, department} = data;
+        res.send({id, username, role, department});
     })
     .catch(err => {
         res.status(404).end();

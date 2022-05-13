@@ -46,17 +46,17 @@ function oneCourse(course: Course, key: number) {
 }
 
 function Dashboard(props: DashboardProps) {
-    const [userName, setUserName] = useState<string>(props.user.userName);
+    const [id, setId] = useState<number>(props.user.id);
     const [role, setRole] = useState<string>(props.user.role);
     const newsList = useNewsList();
-    const todoList = useTodoList(userName);
+    const todoList = useTodoList(id);
 
     useEffect(() => {
-        setUserName(props.user.userName);
+        setId(props.user.id);
         setRole(props.user.role);
     }, [props.user])
 
-    const courseList = useCourseList(userName, role);
+    const courseList = useCourseList(id, role);
 
     return (
         <Box sx={{textAlign: "left"}}>

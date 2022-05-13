@@ -22,6 +22,7 @@ function Login(props: LoginProps) {
             navigate("/home", {replace: true});
         })
         .catch(err => {
+            console.log(err);
             alert("UserName not found or password incorrect!!");
         })
     }
