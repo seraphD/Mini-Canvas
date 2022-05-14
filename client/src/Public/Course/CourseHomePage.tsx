@@ -1,4 +1,4 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import { useParams } from 'react-router-dom';
 import { Box, Button, Grid, Divider } from "@mui/material";
 import { Descendant } from "slate";
@@ -24,11 +24,11 @@ function oneTodo(todoItem: TodoItem, key: number) {
 }
 
 function CourseHomePage(props: courseHomePageProps) {
-    const { courseCode } = useParams();
+    const { course } = useParams();
     const [courseHomePage, setCourseHomePage] = useState<Descendant[]>(props.homepage);
     const [editing, setEditing] = useState<boolean>(false);
     const editorRef = useRef({value: []});
-    const todoList = useTodoList(props.id, parseInt(courseCode ? courseCode : "0"));
+    const todoList = useTodoList(props.id, parseInt(course ? course : "0"));
 
     const handleEditBtnCLick = () => {
         if (editing) {

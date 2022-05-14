@@ -189,22 +189,25 @@ app.get("/assignmentlist", (req, res) => {
     getAssignmentList(role, course).then(data => res.send(data)).catch(err => res.status(404).end());
 })
 
-app.post("/editcoursepage", (req, res) => {
+app.patch("/editcoursepage", (req, res) => {
     const { homepage, course } = req.body;
 
     const updateCoursePage = (homepage, id) => new Promise((resolve, reject) => {
         const sql = `
         update course
-        set coursepage=JSON_REPLACE(
+        set coursepage=JSON_SET(
             \`coursepage\`,
             "$.homepage",
-            '${homepage}'
+            cast('${homepage}' as JSON)
         )
         where id=${id};
         `;
 
         pool.query(sql, (err, res) => {
-            if (err) reject(err);
+            if (err) {
+                console.log(err);
+                reject(err);
+            }
             else resolve(res);
         })
     })
@@ -216,10 +219,10 @@ app.get("/coursepage", (req, res) => {
     const {course} = req.query;
 
     const findCoursePage = (id) => new Promise((resolve, reject) => {
-        const sql = `select name, coursepage from course where id=${id}`;
+        const sql = `select name, coursepage, department from course where id=${id}`;
         pool.query(sql, (err, res) => {
             if (err) reject(err);
-            else resolve(res);
+            else resolve(res[0]);
         })
     })
 
@@ -249,7 +252,7 @@ app.get("/courselist", (req, res) => {
     const { userid, role } = req.query;
     const getStuCourseList = (id) => new Promise((resolve, reject) => {
         const sql = `
-            SELECT courseid, name, department 
+            SELECT courseid, name, department, description, instructor 
             FROM registration as r, course as c
             where r.courseid=c.id and r.studentid=${id}
         `;
@@ -262,7 +265,7 @@ app.get("/courselist", (req, res) => {
     })
 
     const getInsCourseList = (id) => new Promise((resolve, reject) => {
-        const sql = `select id, name, department from course where instructor=${id}`;
+        const sql = `select id as courseid, name, department, description, instructor from course where instructor=${id}`;
         pool.query(sql, (err, res) => {
             if (err) {
                 reject(err);

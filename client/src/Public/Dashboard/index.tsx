@@ -35,12 +35,12 @@ function oneNews(news: News, key: number) {
 }
 
 function oneCourse(course: Course, key: number) {
-    const {name, description, department, code} = course;
+    const {courseid, name, description} = course;
 
     return (
         <Card className="course-card" key={key} sx={{ display: "inline-block", height: 150 }}>
-            <Link to={`/home/course/${code}`}><h4>{name}</h4></Link>
-            <Link to={`/home/course/${code}`}>{description}</Link>
+            <Link to={`/home/course/${courseid}`}><h4>{name}</h4></Link>
+            <Link to={`/home/course/${courseid}`}>{description}</Link>
         </Card>
     )
 }

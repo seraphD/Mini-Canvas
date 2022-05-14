@@ -15,7 +15,7 @@ export interface Course {
     name: string,
     description: string,
     department: "CS" | "ECE" | "CS & ECE",
-    code: number,
+    courseid: number,
     instructor: number,
 }
 

@@ -14,26 +14,29 @@ type courseProps = { id: number, userName: string, role: string};
 type Tab = {name: string, visible: boolean};
 
 function Course(props: courseProps) {
-    const { courseCode } = useParams();
+    const { course } = useParams();
     const [loaded, setLoaded] = useState<boolean>(false);
     const [courseHomePage, setCourseHomePage] = useState<Descendant[]>([]);
     const [department, setDepartment] = useState<string>("");
     const [term, setTerm] = useState<string>(""); 
     const [tabs, setTabs] = useState<Tab[]>([]);
+    const [courseName, setCourseName] = useState<string>("");
 
     useEffect(() => {
-        axios.get(`${config.baseUrl}/coursepage`, { params: {courseCode} })
+        axios.get(`${config.baseUrl}/coursepage`, { params: {course} })
         .then(res => {
-            const {department, tabs, homepage} = res.data;
-            setCourseHomePage(homepage);
-            setTabs(tabs);
-            setLoaded(true);
+            let {name, coursepage, department} = res.data;
+            coursepage = JSON.parse(coursepage);
+            setCourseHomePage(coursepage.homepage);
+            setTabs(coursepage.tabs);
             setDepartment(department);
+            setCourseName(name);
+            setLoaded(true);
         })
         .catch(error => {
             alert("Load course page failed!");
         });
-    }, [courseCode]);
+    }, [course]);
 
     useEffect(() => {
         axios.get(`${config.baseUrl}/term`)
@@ -47,7 +50,7 @@ function Course(props: courseProps) {
     }, []);
 
     const setTabVisibility = (tabName: string, visibility: boolean, tab: Tab) => {
-        axios.post(`${config.baseUrl}/tabvisibility`, {courseCode, tabName, visibility})
+        axios.post(`${config.baseUrl}/tabvisibility`, {course, tabName, visibility})
         .then(res => {
             if( res.status === 200 ) {
                 tab.visible = visibility;
@@ -63,7 +66,7 @@ function Course(props: courseProps) {
 
     return (
         <Box sx={{textAlign: "left"}}>
-            <h3>{department}_{courseCode}_{term}</h3>
+            <h3>{department}_{course}_{term} {courseName}</h3>
             <Divider sx={{ width: "80%" }}></Divider>
             <Grid container spacing={4} columns={{xs: 4, sm: 8, md: 12, lg: 14, xl: 18}}>
                 <Grid item xs={0} sm={0} md={0} lg={2} xl={2}>
@@ -82,9 +85,9 @@ function Course(props: courseProps) {
 
                 <Grid item xs={4} sm={8} md={12} lg={12} xl={16}>
                     <Routes>
-                        <Route path="" element={loaded? <CourseHomePage homepage={courseHomePage} id={props.id} role={props.role} code={courseCode!} userName={props.userName}/> : null}></Route>
+                        <Route path="" element={loaded? <CourseHomePage homepage={courseHomePage} id={props.id} role={props.role} code={course!} userName={props.userName}/> : null}></Route>
                         <Route path="announcement" element={<div>announcement</div>}></Route>
-                        <Route path="assignment/*" element={<Assignment role={props.role} code={courseCode!}/>}></Route>
+                        <Route path="assignment/*" element={<Assignment role={props.role} code={course!}/>}></Route>
                         <Route path="grade" element={<div>grade</div>}></Route>
                         <Route path="disccusion" element={<div>disccusion</div>}></Route>
                         <Route path="files" element={<div>files</div>}></Route>
