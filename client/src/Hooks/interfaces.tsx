@@ -30,7 +30,7 @@ export interface TodoItem {
 export interface AssignmentListItem {
     title: string,
     assignmentId: number,
-    dueDate: string,
+    duedate: string,
     point: number,
     status: string,
 }
@@ -38,7 +38,7 @@ export interface AssignmentListItem {
 export interface AssignmentItem {
     title: string,
     assignmentId: number,
-    dueDate: string,
+    duedate: string,
     point: number,
     status: string,
     detail: Array<any>,

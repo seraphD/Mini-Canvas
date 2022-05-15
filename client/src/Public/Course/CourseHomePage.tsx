@@ -33,7 +33,7 @@ function CourseHomePage(props: courseHomePageProps) {
     const handleEditBtnCLick = () => {
         if (editing) {
             const value = editorRef.current.value;
-            axios.post(`${config.baseUrl}/editcoursepage`, {value, code: props.code})
+            axios.patch(`${config.baseUrl}/editcoursepage`, {homepage: JSON.stringify(value), course})
             .then(data => {
                 alert("Editing course Homepage succeed!");
             })

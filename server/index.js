@@ -43,12 +43,15 @@ app.get("/assignmentDetail", (req, res) => {
 
     const getAssignmentDetail = (id) => new Promise((resolve, reject) => {
         const sql = `
-        select title, detail, duedate, point from assignment
+        select id as assignmentId, title, detail, duedate, point, detail, status from assignment
         where id=${id};
         `
         pool.query(sql, (err, res) => {
             if (err) reject(err);
-            else resolve(res);
+            else {
+                res[0].detail = JSON.parse(res[0].detail);
+                resolve(res);
+            }
         })
     })
     
@@ -95,11 +98,14 @@ app.patch("/editAssignmentPoint", (req, res) => {
     const editPoint = (id, point) => new Promise((resolve, reject) => {
         const sql = `
         update assignment
-        set point='${point}'
+        set point=${point}
         where id=${id};
         `
         pool.query(sql, (err, res) => {
-            if (err) reject(err);
+            if (err) {
+                console.log(err);
+                reject(err);
+            }
             else resolve(res);
         })
     })
@@ -175,7 +181,7 @@ app.get("/assignmentlist", (req, res) => {
 
     const getAssignmentList = (role, course) => new Promise((resolve, reject) => {
         let sql = `
-        select title, duedate, status, point
+        select id as assignmentId, title, duedate, status, point
         from assignment
         where courseid=${course} ${role === "student" ? "and status='puslished' or status='closed'" : ""}
         `

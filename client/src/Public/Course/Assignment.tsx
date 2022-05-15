@@ -13,6 +13,7 @@ import "./index.css";
 import { Routes, Route, useParams, useNavigate } from "react-router-dom";
 import { Editor } from "./Editor";
 import { styled } from '@mui/material/styles';
+import convert from "../Utils/regulizeTime";
 
 type AssignmentListProps = { assignmentList: AssignmentListItem[], code: string, role: string };
 type AssignmentProps = { code: string, role: string };
@@ -41,7 +42,7 @@ const initAssignmentDetailState = {
 
 function AssignmentList(props: AssignmentListProps) {
     const navigate = useNavigate();
-    const { courseCode } = useParams();
+    const { course } = useParams();
 
     return (
         <Box sx={{ width: '100%', maxWidth: 800, position: "relative", height: "93vh", overflow: "scroll"}}>
@@ -49,10 +50,10 @@ function AssignmentList(props: AssignmentListProps) {
                 <List>
                     {props.assignmentList.map((assignment, key) => (
                         <ListItem key={key} disablePadding>
-                            <ListItemButton component="a" href={`/home/course/${props.code}/assignment/${assignment.assignmentId}`}>
+                            <ListItemButton component="a" href={`/home/course/${course}/assignment/${assignment.assignmentId}`}>
                                 <Box sx={{ width: "100%" }}>
                                     <p className="assignment-title">{assignment.title}</p>
-                                    <p>Due: {assignment.dueDate}, point: {assignment.point}, status: {assignment.status}</p>
+                                    <p>Due: {convert(assignment.duedate)}, point: {assignment.point}, status: {assignment.status}</p>
                                     <Divider sx={{ width: "100%" }}></Divider>
                                 </Box>
                             </ListItemButton>
@@ -60,7 +61,7 @@ function AssignmentList(props: AssignmentListProps) {
                     ))}
                 </List>
             </nav>
-           {props.role === "instructor" ?  <IconButton id="new-assignment-btn" color="primary" onClick={() => navigate(`/home/course/${courseCode}/assignment/new`)}><AddIcon sx={{ fontSize: 40 }}/></IconButton> : null}
+           {props.role === "instructor" ? <IconButton id="new-assignment-btn" color="primary" onClick={() => navigate(`/home/course/${course}/assignment/new`)}><AddIcon sx={{ fontSize: 40 }}/></IconButton> : null}
         </Box>
     )
 }
@@ -89,14 +90,14 @@ function AssignmentDetail(props: AssignmentDetailProps) {
     const [loaded, setLoaded] = useState<boolean>(false);
     const [saving, setSaving] = useState<boolean>(false);
     const [delModel, setDelModal] = useState<boolean>(false);
-    const { courseCode, assignmentId } = useParams();
+    const { course, assignmentId } = useParams();
     const editorRef = useRef({value: []});
     const [state, dispatch] = useReducer(reducer, initAssignmentDetailState);
     const navigate = useNavigate();
 
     useEffect(() => {
         if (assignmentId !== "new") {
-            axios.get(`${config.baseUrl}/assignmentdetail`, { params: { assignmentId } })
+            axios.get(`${config.baseUrl}/assignmentdetail`, { params: { id: assignmentId } })
             .then(res => {
                 dispatch({type: "load", payload: res.data});
                 setLoaded(true);
@@ -108,7 +109,7 @@ function AssignmentDetail(props: AssignmentDetailProps) {
         else {
             setLoaded(true);
             setEditing(true);
-            dispatch({ type: "editCourse", payload: parseInt(courseCode!) });
+            dispatch({ type: "editCourse", payload: parseInt(course!) });
         }
     }, []);
 
@@ -134,7 +135,7 @@ function AssignmentDetail(props: AssignmentDetailProps) {
                     alert("New assignment created!");
                     const newId = res.data;
                     props.onAdd(state);
-                    navigate(`/home/course/${courseCode}/assignment/${newId}`);
+                    navigate(`/home/course/${course}/assignment/${newId}`);
                 })
             }
         }
@@ -147,7 +148,7 @@ function AssignmentDetail(props: AssignmentDetailProps) {
         axios.post(`${config.baseUrl}/delassignment`, {assignmentId: state.assignmentId})
         .then(res => {
             props.onDel(state.assignmentId);
-            navigate(`/home/course/${courseCode}/assignment`);
+            navigate(`/home/course/${course}/assignment`);
         })
         .catch(error => {
             alert("deleting assignment failed! Try again");
@@ -157,7 +158,14 @@ function AssignmentDetail(props: AssignmentDetailProps) {
     const handleDelBtnClick = () => setDelModal(true);
     const delClose = () => setDelModal(false);
     const handleStatusChange = (e: any) => dispatch({ type: "editStatus", payload: e.target.value });
-    const handlePointChange = (e: any) => dispatch({ type: "editPoint", payload: e.target.value.length ? parseInt(e.target.value) : "" });
+    const handlePointChange = (e: any) => {
+        const point =  e.target.value.length ? parseInt(e.target.value) : 0;
+        axios.patch(`${config.baseUrl}/editAssignmentPoint`, {id: parseInt(state.assignmentId), point})
+        .then(res => {
+            dispatch({ type: "editPoint", payload: point });
+            alert("Edit point succeded");
+        })
+    }
     const handleEditTitle = (e: any) => dispatch({ type: "editTitle", payload: e.target.value });
 
     return (
@@ -166,10 +174,10 @@ function AssignmentDetail(props: AssignmentDetailProps) {
                 {editing ? <TextField sx={{ width: "50%", margin: "10px 0" }} onChange={handleEditTitle} defaultValue={state.title} variant="outlined"/> : <h2>{state.title}</h2>}
                 <Box sx={{ height: 30 }}>
                     <Box className="assignment-info-item" sx={{ marginLeft: 0 }}>
-                        Due Date: {editing ? <LocalizationProvider dateAdapter={AdapterDateFns}><DatePicker value={null} onChange={value => console.log(value)} renderInput={(params) => <TextField sx={{width: "150px"}} {...params} />} /> </LocalizationProvider> : state.dueDate};
+                        Due Date: {editing ? <LocalizationProvider dateAdapter={AdapterDateFns}><DatePicker value={null} onChange={value => console.log(value)} renderInput={(params) => <TextField sx={{width: "150px"}} {...params} />} /> </LocalizationProvider> : convert(state.duedate)};
                     </Box>
-                    <Box className="assignment-info-item">Point: {editing ? <TextField onChange={handlePointChange} variant="outlined" sx={{ width: 60, height: 50 }} defaultValue={state.point} /> : state.point};</Box>
-                    <Box className="assignment-info-item">Status: {editing ? 
+                    <Box className="assignment-info-item">Point: {props.role === "instructor" ? <TextField onBlur={handlePointChange} variant="outlined" sx={{ width: 60, height: 50 }} defaultValue={state.point.toString()} /> : state.point};</Box>
+                    <Box className="assignment-info-item">Status: {props.role === "instructor" ?
                         <Select 
                             value={state.status}
                             onChange={handleStatusChange}
@@ -222,7 +230,7 @@ function Assignment(props: AssignmentProps) {
 
     useEffect(() => {
         const {code, role} = props;
-        axios.get(`${config.baseUrl}/assignmentlist`, { params: {code, role} })
+        axios.get(`${config.baseUrl}/assignmentlist`, { params: {course: code, role} })
         .then(res => {
             setAssignmentList(res.data);
         })
