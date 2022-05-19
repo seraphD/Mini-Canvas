@@ -118,7 +118,7 @@ function AssignmentDetail(props: AssignmentDetailProps) {
             setSaving(true);
             dispatch({ type: "editDetail", pyaload: editorRef.current.value });
             if (state.assignmentId !== "temp") {
-                axios.post(`${config.baseUrl}/editassignment`, { newAssignment: state })
+                axios.patch(`${config.baseUrl}/editAssignmentDetail`, { id: parseInt(state.assignmentId), detail: JSON.stringify(editorRef.current.value)})
                 .then(res => {
                     setEditing(!editing);
                     setSaving(false);
@@ -157,7 +157,18 @@ function AssignmentDetail(props: AssignmentDetailProps) {
 
     const handleDelBtnClick = () => setDelModal(true);
     const delClose = () => setDelModal(false);
-    const handleStatusChange = (e: any) => dispatch({ type: "editStatus", payload: e.target.value });
+    const handleStatusChange = (e: any) => {
+        const status = e.target.value;
+        axios.patch(`${config.baseUrl}/editAssignmentStatus`, {id: state.assignmentId, status})
+        .then(() => {
+            dispatch({ type: "editStatus", payload: e.target.value });
+            alert(`Assignment is ${status}`);
+        })
+        .catch((err) => {
+            console.log(err);
+            alert("Status change failed");
+        })
+    }
     const handlePointChange = (e: any) => {
         const point =  e.target.value.length ? parseInt(e.target.value) : 0;
         axios.patch(`${config.baseUrl}/editAssignmentPoint`, {id: parseInt(state.assignmentId), point})
@@ -166,17 +177,28 @@ function AssignmentDetail(props: AssignmentDetailProps) {
             alert("Edit point succeded");
         })
     }
-    const handleEditTitle = (e: any) => dispatch({ type: "editTitle", payload: e.target.value });
+    const handleEditTitle = (e: any) => {
+        const title = e.target.value;
+        axios.patch(`${config.baseUrl}/editAssignmentTitle`, {id: parseInt(state.assignmentId), title})
+        .then(() => {
+            dispatch({ type: "editTitle", payload: e.target.value });
+            alert("Modify title succeed!");
+        })
+        .catch(err => {
+            alert("Modify title failed!");
+            console.log(err);
+        })
+    }
 
     return (
         <Box sx={{ width: "100%", maxWidth: 800, minWidth: 400 }}>
             <Box sx={{ position: "relative", height: "10vh" }}>
-                {editing ? <TextField sx={{ width: "50%", margin: "10px 0" }} onChange={handleEditTitle} defaultValue={state.title} variant="outlined"/> : <h2>{state.title}</h2>}
+                {props.role === "instructor" ? <TextField sx={{ width: "50%", margin: "10px 0" }} onBlur={handleEditTitle} defaultValue={state.title} variant="outlined"/> : <h2>{state.title}</h2>}
                 <Box sx={{ height: 30 }}>
                     <Box className="assignment-info-item" sx={{ marginLeft: 0 }}>
-                        Due Date: {editing ? <LocalizationProvider dateAdapter={AdapterDateFns}><DatePicker value={null} onChange={value => console.log(value)} renderInput={(params) => <TextField sx={{width: "150px"}} {...params} />} /> </LocalizationProvider> : convert(state.duedate)};
+                        Due Date: {props.role === "instructor" ? <LocalizationProvider dateAdapter={AdapterDateFns}><DatePicker value={null} onChange={value => console.log(value)} renderInput={(params) => <TextField sx={{width: "150px"}} {...params} />} /> </LocalizationProvider> : convert(state.duedate)};
                     </Box>
-                    <Box className="assignment-info-item">Point: {props.role === "instructor" ? <TextField onBlur={handlePointChange} variant="outlined" sx={{ width: 60, height: 50 }} defaultValue={state.point.toString()} /> : state.point};</Box>
+                    <Box className="assignment-info-item">Point: {props.role === "instructor" ? <TextField onBlur={handlePointChange} variant="outlined" sx={{ width: 60, height: 50 }} defaultValue={state.point} /> : state.point};</Box>
                     <Box className="assignment-info-item">Status: {props.role === "instructor" ?
                         <Select 
                             value={state.status}

@@ -75,6 +75,23 @@ app.post("/newAssignment", (req, res) => {
     newAssginemnt().then((data) => res.send(data.insertId)).catch(err => res.status(404).end());
 })
 
+app.patch("/editAssignmentTitle", (req, res) => {
+    const {id, title} = req.body;
+    const editTitle = () => new Promise((resolve, reject) => {
+        const sql = `
+        update assignment
+        set title='${title}'
+        where id=${id};
+        `
+        pool.query(sql, (err) => {
+            if (err) reject(err);
+            else resolve();
+        })
+    })
+
+    editTitle().then(() => res.status(200).end()).catch(err => res.status(404).end());
+})
+
 app.patch("/editAssignmentDetail", (req, res) => {
     const { id, detail } = req.body;
     const editDetail = (id, detail) => new Promise((resolve, reject) => {
@@ -140,11 +157,14 @@ app.patch("/editAssignmentStatus", (req, res) => {
     const editStatus = (id, status) => new Promise((resolve, reject) => {
         const sql = `
         update assignment
-        set status=${status}
+        set status='${status}'
         where id=${id};
         `
         pool.query(sql, (err, res) => {
-            if (err) reject();
+            if (err) {
+                console.log(err);
+                reject();
+            }
             else resolve();
         })
     })
