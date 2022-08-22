@@ -14,6 +14,7 @@ import { Routes, Route, useParams, useNavigate } from "react-router-dom";
 import { Editor } from "./Editor";
 import { styled } from '@mui/material/styles';
 import convert from "../Utils/regulizeTime";
+import collectionStateProvider from "../Utils/collectionStateProvider";
 
 type AssignmentListProps = { assignmentList: AssignmentListItem[], code: string, role: string };
 type AssignmentProps = { code: string, role: string };
@@ -66,7 +67,7 @@ function AssignmentList(props: AssignmentListProps) {
     )
 }
 
-function reducer(state: any, action: any) {
+const reducer = (state: any, action: any) => {
     switch(action.type) {
         case "load":
             return {...action.payload};
@@ -94,7 +95,7 @@ function AssignmentDetail(props: AssignmentDetailProps) {
     const editorRef = useRef({value: []});
     const [state, dispatch] = useReducer(reducer, initAssignmentDetailState);
     const navigate = useNavigate();
-
+    
     useEffect(() => {
         if (assignmentId !== "new") {
             axios.get(`${config.baseUrl}/assignmentdetail`, { params: { id: assignmentId } })
@@ -277,6 +278,7 @@ function Assignment(props: AssignmentProps) {
     return (
         <Routes>
             <Route path="" element={<AssignmentList assignmentList={assignmentList} code={props.code} role={props.role} />}></Route>
+            {/* <Route path="" render={collectionStateProvider({children: assignmentList, collectionListReducer: reducer, initialCollectionState: initAssignmentDetailState})}></Route> */}
             <Route path=":assignmentId" element={<AssignmentDetail role={props.role} onDel={onDel} onAdd={onAdd}/>}></Route>
         </Routes>
     )

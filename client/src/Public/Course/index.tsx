@@ -54,8 +54,7 @@ function Course(props: courseProps) {
         .then(res => {
             if( res.status === 200 ) {
                 tab.visible = visibility;
-                setTabs([]);
-                setTabs(tabs);
+                setTabs([...tabs]);
                 alert(`${tabName} is now ${visibility? "visible" : "invisible"} to students now`);
             }
         })
